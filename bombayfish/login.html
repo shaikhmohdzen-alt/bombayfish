@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Register - Bombayfish</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Fish Market</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container" style="max-width: 450px; margin-top: 40px;">
+    <div style="background: white; padding: 30px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+      
+      <!-- Toggle Tabs -->
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button id="showLoginBtn" class="btn btn-primary" style="flex:1;" onclick="toggleForm('login')">Login</button>
+        <button id="showRegBtn" class="btn btn-outline" style="flex:1;" onclick="toggleForm('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <h3 style="color: var(--primary-navy); margin-bottom: 15px;">Sign In</h3>
+        <div class="form-group">
+          <label>Mobile Number or Email</label>
+          <input type="text" id="loginId" required placeholder="e.g. 9820098200">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Login</button>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+        <h3 style="color: var(--primary-navy); margin-bottom: 15px;">Create Account</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" required placeholder="e.g. Rahul Sharma">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="regPhone" required placeholder="10-digit mobile number">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPass" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Register Account</button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Firebase SDK Libraries -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    function toggleForm(type) {
+      if (type === 'login') {
+        document.getElementById("loginForm").style.display = "block";
+        document.getElementById("registerForm").style.display = "none";
+        document.getElementById("showLoginBtn").className = "btn btn-primary";
+        document.getElementById("showRegBtn").className = "btn btn-outline";
+      } else {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("registerForm").style.display = "block";
+        document.getElementById("showLoginBtn").className = "btn btn-outline";
+        document.getElementById("showRegBtn").className = "btn btn-secondary";
+      }
+    }
+
+    // Register User in Firebase Realtime Database
+    function handleRegister(e) {
+      e.preventDefault();
+      const phone = document.getElementById("regPhone").value.trim();
+      const name = document.getElementById("regName").value.trim();
+      const pass = document.getElementById("regPass").value.trim();
+
+      if (typeof database !== 'undefined') {
+        database.ref('users/' + phone).set({
+          fullName: name,
+          phone: phone,
+          password: pass,
+          registeredAt: new Date().toLocaleString()
+        }, (error) => {
+          if (!error) {
+            alert("Account registered successfully in cloud database! Please log in.");
+            toggleForm('login');
+          } else {
+            alert("Registration error: " + error.message);
+          }
+        });
+      }
+    }
+
+    // Authenticate User from Firebase
+    function handleLogin(e) {
+      e.preventDefault();
+      const phone = document.getElementById("loginId").value.trim();
+      const pass = document.getElementById("loginPass").value.trim();
+
+      if (typeof database !== 'undefined') {
+        database.ref('users/' + phone).once('value', (snapshot) => {
+          const user = snapshot.val();
+          if (user && user.password === pass) {
+            localStorage.setItem("bf_logged_user", JSON.stringify(user));
+            alert(`Welcome back, ${user.fullName}!`);
+            window.location.href = "account.html";
+          } else {
+            alert("Invalid Mobile Number or Password. Please check or Register first.");
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>

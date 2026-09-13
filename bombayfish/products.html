@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish Market - Bombayfish</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Fish Market</a>
+        <a href="about.html">About & Field Study</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="nav-icons">
+        <a href="cart.html" class="cart-icon-btn">🛒 <span class="cart-count" id="cartCount">0</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="section-title">
+      <h2>Fish Market Catalogue</h2>
+      <p>Search, filter, and choose from today's fresh availability</p>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div style="background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between;">
+      <input type="text" id="searchInput" placeholder="Search for fish (e.g. Surmai, Rohu)..." style="padding: 10px; width: 250px; border: 1px solid var(--border-color); border-radius: var(--radius);">
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <select id="categoryFilter" style="padding: 10px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+          <option value="All">All Categories</option>
+          <option value="Sea Fish">Sea Fish</option>
+          <option value="Freshwater Fish">Freshwater Fish</option>
+          <option value="Prawns & Seafood">Prawns & Seafood</option>
+        </select>
+
+        <select id="sortOrder" style="padding: 10px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+          <option value="default">Sort By: Default</option>
+          <option value="low-high">Price: Low to High</option>
+          <option value="high-low">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="product-grid" id="marketProductGrid"></div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let allProducts = getProducts();
+
+      function filterAndRender() {
+        let result = [...allProducts];
+        const searchVal = document.getElementById("searchInput").value.toLowerCase();
+        const catVal = document.getElementById("categoryFilter").value;
+        const sortVal = document.getElementById("sortOrder").value;
+
+        if (searchVal) {
+          result = result.filter(p => p.name.toLowerCase().includes(searchVal));
+        }
+
+        if (catVal !== "All") {
+          result = result.filter(p => p.category === catVal);
+        }
+
+        if (sortVal === "low-high") {
+          result.sort((a, b) => a.pricePerKg - b.pricePerKg);
+        } else if (sortVal === "high-low") {
+          result.sort((a, b) => b.pricePerKg - a.pricePerKg);
+        }
+
+        renderProductGrid("marketProductGrid", result);
+      }
+
+      document.getElementById("searchInput").addEventListener("input", filterAndRender);
+      document.getElementById("categoryFilter").addEventListener("change", filterAndRender);
+      document.getElementById("sortOrder").addEventListener("change", filterAndRender);
+
+      filterAndRender();
+    });
+  </script>
+</body>
+</html>

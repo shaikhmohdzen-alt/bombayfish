@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - Bombayfish</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+      <div class="nav-links">
+        <a href="products.html">Fish Market</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="section-title">
+      <h2>Your Shopping Cart</h2>
+      <p>Review items, cut selections, and pricing before checkout</p>
+    </div>
+
+    <div id="cartContent"></div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    function renderCartPage() {
+      const cart = getCart();
+      const container = document.getElementById("cartContent");
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px;">
+            <p>Your cart is currently empty.</p>
+            <a href="products.html" class="btn btn-primary" style="margin-top: 15px;">Browse Fresh Fish</a>
+          </div>
+        `;
+        return;
+      }
+
+      let grandTotal = 0;
+      let tableRows = cart.map((item, index) => {
+        grandTotal += item.totalPrice;
+        return `
+          <tr>
+            <td>
+              <strong>${item.name}</strong><br>
+              <small style="color:var(--text-muted);">${item.prepOption}</small>
+            </td>
+            <td>${item.weightKg >= 1 ? item.weightKg + ' kg' : (item.weightKg * 1000) + ' g'}</td>
+            <td>₹${item.pricePerKg}</td>
+            <td>${item.quantity}</td>
+            <td>₹${item.totalPrice}</td>
+            <td>
+              <button onclick="removeItem(${index})" style="background:var(--accent-coral); color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Remove</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Item & Cutting</th>
+              <th>Weight</th>
+              <th>Rate/kg</th>
+              <th>Qty</th>
+              <th>Subtotal</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+          <a href="products.html" class="btn btn-outline">Continue Shopping</a>
+          <div>
+            <span style="font-size: 1.2rem; font-weight: bold; margin-right: 20px;">Total: ₹${grandTotal}</span>
+            <a href="checkout.html" class="btn btn-primary">Proceed to Checkout</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function removeItem(index) {
+      let cart = getCart();
+      cart.splice(index, 1);
+      saveCart(cart);
+      renderCartPage();
+    }
+
+    document.addEventListener("DOMContentLoaded", renderCartPage);
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed - Bombayfish</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+    </nav>
+  </header>
+
+  <div class="container" style="max-width: 600px; margin-top: 40px;">
+    <div style="background: white; padding: 40px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+      <div style="font-size: 3rem; color: var(--green-fresh); margin-bottom: 10px;">✅</div>
+      <h2 style="color: var(--primary-navy);">Order Placed Successfully!</h2>
+      <p style="color: var(--text-muted); margin-bottom: 20px;">Thank you for testing our online fish market platform demonstration.</p>
+
+      <div id="receiptBox" style="text-align: left; background: var(--light-bg); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; font-size: 0.95rem;">
+        <!-- Filled via JS -->
+      </div>
+
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <a href="products.html" class="btn btn-primary">Continue Shopping</a>
+        <a href="account.html" class="btn btn-outline">Track In Account</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get("orderId");
+      const orders = JSON.parse(localStorage.getItem("bf_orders")) || [];
+      const order = orders.find(o => o.orderId === orderId) || orders[orders.length - 1];
+
+      const box = document.getElementById("receiptBox");
+      if (order) {
+        box.innerHTML = `
+          <p><strong>Order Reference:</strong> ${order.orderId}</p>
+          <p><strong>Customer:</strong> ${order.customerName}</p>
+          <p><strong>Fulfillment Mode:</strong> ${order.deliveryMethod}</p>
+          <p><strong>Payment Mode:</strong> ${order.paymentMethod}</p>
+          <p><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
+          <p><strong>Estimated Prep/Delivery:</strong> Today, within 2 hours</p>
+        `;
+      } else {
+        box.innerHTML = "<p>Order details retrieved.</p>";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Bombayfish</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="section-title">
+      <h2>Order Checkout</h2>
+      <p>Enter delivery details and order preferences</p>
+    </div>
+
+    <form id="checkoutForm" class="checkout-grid">
+      <div style="background: white; padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <h3 style="margin-bottom: 15px; color: var(--primary-navy);">Customer & Address Info</h3>
+        
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="custName" required placeholder="e.g. Rahul Sharma">
+        </div>
+
+        <div class="form-group">
+          <label>Mobile Number *</label>
+          <input type="tel" id="custPhone" required placeholder="10-digit mobile number">
+        </div>
+
+        <div class="form-group">
+          <label>Delivery Address *</label>
+          <textarea id="custAddress" rows="3" required placeholder="Flat, Building, Street details"></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label>Area / Locality *</label>
+            <input type="text" id="custArea" required placeholder="e.g. Mahim West">
+          </div>
+          <div class="form-group">
+            <label>City *</label>
+            <input type="text" id="custCity" value="Mumbai" required>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 15px; color: var(--primary-navy);">Fulfillment & Payment Options</h3>
+
+        <div class="form-group">
+          <label>Fulfillment Method:</label>
+          <select id="deliveryMethod">
+            <option value="Home Delivery">Home Delivery (Morning Slot 7 AM - 10 AM)</option>
+            <option value="Store Pickup">Store Pickup at Market Counter</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Mode:</label>
+          <select id="paymentMethod">
+            <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+            <option value="UPI / QR Code">UPI / QR Code on Delivery</option>
+            <option value="Pay at Store Counter">Pay at Store Counter</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Order Summary Column -->
+      <div style="background: white; padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-color); height: fit-content;">
+        <h3 style="margin-bottom: 15px; color: var(--primary-navy);">Summary</h3>
+        <div id="summaryItems"></div>
+        <hr style="margin: 15px 0; border: none; border-top: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; color: var(--primary-navy);">
+          <span>Total Payable:</span>
+          <span id="summaryTotal">₹0</span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Place Order</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Firebase Scripts Required for Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cart = getCart();
+      if (cart.length === 0) {
+        window.location.href = "products.html";
+        return;
+      }
+
+      const summaryDiv = document.getElementById("summaryItems");
+      let total = 0;
+      summaryDiv.innerHTML = cart.map(item => {
+        total += item.totalPrice;
+        return `
+          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
+            <span>${item.name} (${item.weightKg}kg x ${item.quantity})</span>
+            <span>₹${item.totalPrice}</span>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById("summaryTotal").innerText = `₹${total}`;
+
+      document.getElementById("checkoutForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const orderId = "BF-" + Math.floor(100000 + Math.random() * 900000);
+        const order = {
+          orderId: orderId,
+          customerName: document.getElementById("custName").value,
+          phone: document.getElementById("custPhone").value,
+          address: `${document.getElementById("custAddress").value}, ${document.getElementById("custArea").value}, ${document.getElementById("custCity").value}`,
+          deliveryMethod: document.getElementById("deliveryMethod").value,
+          paymentMethod: document.getElementById("paymentMethod").value,
+          items: cart,
+          totalAmount: total,
+          status: "Order Placed",
+          date: new Date().toLocaleString()
+        };
+
+        // Push order to Firebase Database
+        if (typeof database !== 'undefined') {
+          database.ref('orders/' + orderId).set(order)
+            .then(() => {
+              saveCart([]);
+              window.location.href = `order-confirmation.html?orderId=${orderId}`;
+            })
+            .catch((err) => {
+              alert("Database Error: " + err.message);
+            });
+        } else {
+          // Fallback local storage
+          const orders = JSON.parse(localStorage.getItem("bf_orders")) || [];
+          orders.push(order);
+          localStorage.setItem("bf_orders", JSON.stringify(orders));
+          saveCart([]);
+          window.location.href = `order-confirmation.html?orderId=${orderId}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
