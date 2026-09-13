@@ -28,19 +28,19 @@
       <p>Search, filter, and choose from today's fresh availability</p>
     </div>
 
-    <!-- Search & Filter Controls -->
-    <div style="background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between;">
-      <input type="text" id="searchInput" placeholder="Search for fish (e.g. Surmai, Rohu)..." style="padding: 10px; width: 250px; border: 1px solid var(--border-color); border-radius: var(--radius);">
-      
-      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <select id="categoryFilter" style="padding: 10px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+    <!-- Search & Filter Controls Container -->
+    <div style="background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between;">
+      <input type="text" id="searchInput" placeholder="Search for fish (e.g. Surmai, Rohu)..." style="padding: 12px 16px; width: 280px; border: 1px solid rgba(79, 70, 229, 0.2); border-radius: var(--radius); font-size: 0.95rem; outline: none;">
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <select id="categoryFilter" style="padding: 12px 16px; border-radius: var(--radius); border: 1px solid rgba(79, 70, 229, 0.2); font-size: 0.95rem; outline: none; background: white; cursor: pointer;">
           <option value="All">All Categories</option>
           <option value="Sea Fish">Sea Fish</option>
           <option value="Freshwater Fish">Freshwater Fish</option>
           <option value="Prawns & Seafood">Prawns & Seafood</option>
         </select>
 
-        <select id="sortOrder" style="padding: 10px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <select id="sortOrder" style="padding: 12px 16px; border-radius: var(--radius); border: 1px solid rgba(79, 70, 229, 0.2); font-size: 0.95rem; outline: none; background: white; cursor: pointer;">
           <option value="default">Sort By: Default</option>
           <option value="low-high">Price: Low to High</option>
           <option value="high-low">Price: High to Low</option>

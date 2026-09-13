@@ -34,22 +34,22 @@
 
       const container = document.getElementById("detailsContainer");
       container.innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: white; padding: 30px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: white; padding: 36px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);">
           <div>
-            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 320px; object-fit: cover; border-radius: var(--radius);">
+            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border-color);">
           </div>
           <div>
             <span class="product-category">${product.category}</span>
-            <h1 style="color: var(--primary-navy); margin: 5px 0;">${product.name}</h1>
-            <p style="color: var(--text-muted); margin-bottom: 15px;">${product.description}</p>
-            <div style="font-size: 1.5rem; font-weight: bold; color: var(--ocean-blue); margin-bottom: 15px;">
+            <h1 style="color: var(--deep-charcoal); margin: 6px 0 12px; font-size: 2rem;">${product.name}</h1>
+            <p style="color: var(--text-muted); margin-bottom: 18px; font-size: 1rem; line-height: 1.6;">${product.description}</p>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--electric-indigo); margin-bottom: 20px;">
               Rate: ₹${product.pricePerKg} / kg
             </div>
 
             <!-- Custom Weight Input Box -->
             <div class="form-group">
               <label for="customWeightInput">Enter Required Weight (in kg):</label>
-              <input type="number" id="customWeightInput" value="1.0" step="0.25" min="0.25" max="25" style="padding: 10px; font-size: 1rem;">
+              <input type="number" id="customWeightInput" value="1.0" step="0.25" min="0.25" max="25" style="padding: 12px; font-size: 1rem;">
               <small style="color: var(--text-muted);">E.g. Enter 0.5 for 500g, 0.75 for 750g, 1.5 for 1.5kg, or 2.5 for 2.5kg.</small>
             </div>
 
@@ -68,9 +68,9 @@
               <input type="number" id="qtyInput" value="1" min="1" max="10">
             </div>
 
-            <div style="background: var(--aqua-tint); padding: 15px; border-radius: var(--radius); margin: 20px 0;">
-              <span style="font-weight: 600;">Calculated Price: </span>
-              <span id="calculatedPrice" style="font-size: 1.4rem; font-weight: bold; color: var(--primary-navy);">₹${product.pricePerKg}</span>
+            <div style="background: var(--aqua-tint); padding: 18px; border-radius: var(--radius); border: 1px solid rgba(6, 182, 212, 0.2); margin: 24px 0;">
+              <span style="font-weight: 700; color: var(--deep-charcoal);">Calculated Price: </span>
+              <span id="calculatedPrice" style="font-size: 1.5rem; font-weight: 800; color: var(--electric-indigo);">₹${product.pricePerKg}</span>
             </div>
 
             <button id="addToCartBtn" class="btn btn-primary" style="width: 100%;">Add To Shopping Cart</button>

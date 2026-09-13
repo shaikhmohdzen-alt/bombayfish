@@ -11,8 +11,8 @@
   <header>
     <nav class="navbar">
       <a href="index.html" class="logo">
-        🐟 Bombay<span>fish</span> 
-        <small style="font-size:0.7rem; background:var(--light-aqua); color:black; padding:2px 6px; border-radius:4px; margin-left:5px;">SELLER DASHBOARD</small>
+        🐟 Bombay<span>fish</span>
+        <small style="font-size:0.75rem; background: var(--vivid-cyan); color: white; padding: 3px 8px; border-radius: 20px; margin-left: 8px; font-weight: 800;">SELLER DASHBOARD</small>
       </a>
       <div class="nav-links">
         <a href="index.html">Main Website</a>
@@ -40,7 +40,7 @@
       </div>
       <div class="stat-card">
         <h3>Pending Delivery</h3>
-        <p id="statPending" style="color: var(--accent-coral);">0</p>
+        <p id="statPending" style="color: var(--bright-coral);">0</p>
       </div>
       <div class="stat-card">
         <h3>Completed Orders</h3>
@@ -49,8 +49,8 @@
     </div>
 
     <!-- Add New Product Control Panel -->
-    <div style="background: white; padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: var(--shadow-sm);">
-      <h3 style="color: var(--primary-navy); margin-bottom: 15px;">Add New Fish Stock to Live Board</h3>
+    <div style="background: white; padding: 28px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: var(--shadow-md);">
+      <h3 style="color: var(--deep-charcoal); margin-bottom: 18px;">Add New Fish Stock to Live Board</h3>
       <form id="addProductForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: end;">
         <div class="form-group" style="margin-bottom:0;">
           <label>Fish Name</label>
@@ -72,14 +72,14 @@
           <label>Short Description</label>
           <input type="text" id="newProdDesc" placeholder="e.g. Fresh ocean catch" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="height: 42px;">Add To Live Board</button>
+        <button type="submit" class="btn btn-primary" style="height: 46px;">Add To Live Board</button>
       </form>
     </div>
 
     <!-- Orders Log Table -->
-    <div style="background: white; padding: 25px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+    <div style="background: white; padding: 28px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-        <h3 style="color: var(--primary-navy);">Live Customer Orders Log (Firebase Synced)</h3>
+        <h3 style="color: var(--deep-charcoal);">Live Customer Orders Log (Firebase Synced)</h3>
         <span class="badge-demo" style="background: var(--green-fresh);">⚡ Realtime Cloud Sync Active</span>
       </div>
 
@@ -98,7 +98,7 @@
           </thead>
           <tbody id="adminOrdersTable">
             <tr>
-              <td colspan="7" style="text-align: center; padding: 20px;">Connecting to Firebase database...</td>
+              <td colspan="7" style="text-align: center; padding: 20px; color: var(--text-muted);">Connecting to Firebase database...</td>
             </tr>
           </tbody>
         </table>
@@ -124,7 +124,7 @@
   <script>
     function listenToFirebaseOrders() {
       if (typeof database === 'undefined') {
-        document.getElementById("adminOrdersTable").innerHTML = 
+        document.getElementById("adminOrdersTable").innerHTML =
           "<tr><td colspan='7' style='text-align:center; color:red;'>Firebase database not initialized! Check script.js config.</td></tr>";
         return;
       }
@@ -136,7 +136,7 @@
         ordersTable.innerHTML = "";
 
         if (!data) {
-          ordersTable.innerHTML = "<tr><td colspan='7' style='text-align:center;'>No orders placed yet. Place an order on the shop to test live tracking!</td></tr>";
+          ordersTable.innerHTML = "<tr><td colspan='7' style='text-align:center; padding: 20px;'>No orders placed yet. Place an order on the shop to test live tracking!</td></tr>";
           document.getElementById("statOrders").innerText = "0";
           document.getElementById("statPending").innerText = "0";
           document.getElementById("statCompleted").innerText = "0";
@@ -151,7 +151,7 @@
 
         orderKeys.forEach((key) => {
           const o = data[key];
-          
+
           if (o.status === "Delivered") {
             completedCount++;
           } else {
@@ -159,36 +159,36 @@
           }
 
           // Format items list nicely
-          const itemsList = o.items ? o.items.map(item => 
+          const itemsList = o.items ? o.items.map(item =>
             `<div>• <strong>${item.name}</strong> (${item.weightKg} kg) - <small>${item.prepOption}</small></div>`
           ).join('') : 'No details';
 
           ordersTable.innerHTML += `
             <tr>
               <td>
-                <strong>${o.orderId}</strong><br>
+                <strong style="color:var(--deep-charcoal);">${o.orderId}</strong><br>
                 <small style="color:var(--text-muted);">${o.date || 'Recent'}</small>
               </td>
               <td>
-                <strong>${o.customerName}</strong><br>
+                <strong style="color:var(--deep-charcoal);">${o.customerName}</strong><br>
                 📞 ${o.phone}<br>
                 <small style="color:var(--text-muted);">${o.address}</small>
               </td>
               <td>${itemsList}</td>
-              <td style="font-weight:bold; color:var(--primary-navy);">₹${o.totalAmount}</td>
+              <td style="font-weight:bold; color:var(--electric-indigo);">₹${o.totalAmount}</td>
               <td>
                 <small><strong>Mode:</strong> ${o.deliveryMethod}</small><br>
                 <small><strong>Pay:</strong> ${o.paymentMethod}</small>
               </td>
               <td>
-                <span style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; 
-                      background: ${o.status === 'Delivered' ? '#c6f6d5' : '#feebc8'}; 
-                      color: ${o.status === 'Delivered' ? '#22543d' : '#744210'};">
+                <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;
+                      background: ${o.status === 'Delivered' ? '#D1FAE5' : '#FEF3C7'};
+                      color: ${o.status === 'Delivered' ? '#065F46' : '#92400E'};">
                   ${o.status}
                 </span>
               </td>
               <td>
-                <select onchange="updateFirebaseOrderStatus('${o.orderId}', this.value)" style="padding:5px; border-radius:4px;">
+                <select onchange="updateFirebaseOrderStatus('${o.orderId}', this.value)" style="padding:6px 10px; border-radius:8px; border:1px solid rgba(79,70,229,0.2);">
                   <option value="Order Placed" ${o.status === "Order Placed" ? "selected" : ""}>Order Placed</option>
                   <option value="Preparing Cut" ${o.status === "Preparing Cut" ? "selected" : ""}>Preparing Cut</option>
                   <option value="Out for Delivery" ${o.status === "Out for Delivery" ? "selected" : ""}>Out for Delivery</option>
