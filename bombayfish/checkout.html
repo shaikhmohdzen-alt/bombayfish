@@ -10,6 +10,18 @@
   <header>
     <nav class="navbar">
       <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+      <button class="menu-toggle" id="mobileMenuToggle">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="products.html">Fish Market</a>
+        <a href="about.html">About & Field Study</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Seller Dashboard</a>
+      </div>
+      <div class="nav-icons">
+        <a href="cart.html" class="cart-icon-btn">🛒 <span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-outline" style="color: white; border-color: white; padding: 4px 10px; font-size:0.85rem;">Login</a>
+      </div>
     </nav>
   </header>
 
@@ -83,6 +95,29 @@
     </form>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h3>🐟 Bombayfish</h3>
+        <p>Digital extension of traditional dock markets.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Fish Market</a></p>
+        <p><a href="about.html">Field Study</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      <div>
+        <h4>Project Notice</h4>
+        <p>Developed as a College Field Study Project. Demonstrates offline-to-online fish retail transition.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>College Field Project — Fresh Fish Market | Bombayfish © 2026</p>
+    </div>
+  </footer>
+
   <!-- Firebase Scripts Required for Realtime Database -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -98,54 +133,62 @@
 
       const summaryDiv = document.getElementById("summaryItems");
       let total = 0;
-      summaryDiv.innerHTML = cart.map(item => {
-        total += item.totalPrice;
-        return `
-          <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
-            <span>${item.name} (${item.weightKg}kg x ${item.quantity})</span>
-            <span>₹${item.totalPrice}</span>
-          </div>
-        `;
-      }).join('');
+      if (summaryDiv) {
+        summaryDiv.innerHTML = cart.map(item => {
+          total += item.totalPrice;
+          return `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.9rem;">
+              <span>${item.name} (${item.weightKg}kg x ${item.quantity})</span>
+              <span>₹${item.totalPrice}</span>
+            </div>
+          `;
+        }).join('');
+      }
 
-      document.getElementById("summaryTotal").innerText = `₹${total}`;
+      const totalElem = document.getElementById("summaryTotal");
+      if (totalElem) {
+        totalElem.innerText = `₹${total}`;
+      }
 
-      document.getElementById("checkoutForm").addEventListener("submit", (e) => {
-        e.preventDefault();
+      const checkoutForm = document.getElementById("checkoutForm");
+      if (checkoutForm) {
+        checkoutForm.addEventListener("submit", (e) => {
+          e.preventDefault();
 
-        const orderId = "BF-" + Math.floor(100000 + Math.random() * 900000);
-        const order = {
-          orderId: orderId,
-          customerName: document.getElementById("custName").value,
-          phone: document.getElementById("custPhone").value,
-          address: `${document.getElementById("custAddress").value}, ${document.getElementById("custArea").value}, ${document.getElementById("custCity").value}`,
-          deliveryMethod: document.getElementById("deliveryMethod").value,
-          paymentMethod: document.getElementById("paymentMethod").value,
-          items: cart,
-          totalAmount: total,
-          status: "Order Placed",
-          date: new Date().toLocaleString()
-        };
+          const orderId = "BF-" + Math.floor(100000 + Math.random() * 900000);
+          const order = {
+            orderId: orderId,
+            customerName: document.getElementById("custName").value,
+            phone: document.getElementById("custPhone").value,
+            address: `${document.getElementById("custAddress").value}, ${document.getElementById("custArea").value}, ${document.getElementById("custCity").value}`,
+            deliveryMethod: document.getElementById("deliveryMethod").value,
+            paymentMethod: document.getElementById("paymentMethod").value,
+            items: cart,
+            totalAmount: total,
+            status: "Order Placed",
+            date: new Date().toLocaleString()
+          };
 
-        // Push order to Firebase Database
-        if (typeof database !== 'undefined') {
-          database.ref('orders/' + orderId).set(order)
-            .then(() => {
-              saveCart([]);
-              window.location.href = `order-confirmation.html?orderId=${orderId}`;
-            })
-            .catch((err) => {
-              alert("Database Error: " + err.message);
-            });
-        } else {
-          // Fallback local storage
-          const orders = JSON.parse(localStorage.getItem("bf_orders")) || [];
-          orders.push(order);
-          localStorage.setItem("bf_orders", JSON.stringify(orders));
-          saveCart([]);
-          window.location.href = `order-confirmation.html?orderId=${orderId}`;
-        }
-      });
+          // Push order to Firebase Database if available
+          if (typeof database !== 'undefined') {
+            database.ref('orders/' + orderId).set(order)
+              .then(() => {
+                saveCart([]);
+                window.location.href = `order-confirmation.html?orderId=${orderId}`;
+              })
+              .catch((err) => {
+                alert("Database Error: " + err.message);
+              });
+          } else {
+            // Fallback local storage
+            const orders = JSON.parse(localStorage.getItem("bf_orders")) || [];
+            orders.push(order);
+            localStorage.setItem("bf_orders", JSON.stringify(orders));
+            saveCart([]);
+            window.location.href = `order-confirmation.html?orderId=${orderId}`;
+          }
+        });
+      }
     });
   </script>
 </body>

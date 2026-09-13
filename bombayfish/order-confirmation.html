@@ -10,6 +10,18 @@
   <header>
     <nav class="navbar">
       <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
+      <button class="menu-toggle" id="mobileMenuToggle">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="products.html">Fish Market</a>
+        <a href="about.html">About & Field Study</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Seller Dashboard</a>
+      </div>
+      <div class="nav-icons">
+        <a href="cart.html" class="cart-icon-btn">🛒 <span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-outline" style="color: white; border-color: white; padding: 4px 10px; font-size:0.85rem;">Login</a>
+      </div>
     </nav>
   </header>
 
@@ -30,6 +42,29 @@
     </div>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h3>🐟 Bombayfish</h3>
+        <p>Digital extension of traditional dock markets.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Fish Market</a></p>
+        <p><a href="about.html">Field Study</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      <div>
+        <h4>Project Notice</h4>
+        <p>Developed as a College Field Study Project. Demonstrates offline-to-online fish retail transition.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>College Field Project — Fresh Fish Market | Bombayfish © 2026</p>
+    </div>
+  </footer>
+
   <script src="script.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -39,17 +74,19 @@
       const order = orders.find(o => o.orderId === orderId) || orders[orders.length - 1];
 
       const box = document.getElementById("receiptBox");
-      if (order) {
-        box.innerHTML = `
-          <p style="margin-bottom:6px;"><strong>Order Reference:</strong> ${order.orderId}</p>
-          <p style="margin-bottom:6px;"><strong>Customer:</strong> ${order.customerName}</p>
-          <p style="margin-bottom:6px;"><strong>Fulfillment Mode:</strong> ${order.deliveryMethod}</p>
-          <p style="margin-bottom:6px;"><strong>Payment Mode:</strong> ${order.paymentMethod}</p>
-          <p style="margin-bottom:6px;"><strong>Total Paid:</strong> <span style="color:var(--electric-indigo); font-weight:bold;">₹${order.totalAmount}</span></p>
-          <p><strong>Estimated Prep/Delivery:</strong> Today, within 2 hours</p>
-        `;
-      } else {
-        box.innerHTML = "<p>Order details retrieved.</p>";
+      if (box) {
+        if (order) {
+          box.innerHTML = `
+            <p style="margin-bottom:6px;"><strong>Order Reference:</strong> ${order.orderId}</p>
+            <p style="margin-bottom:6px;"><strong>Customer:</strong> ${order.customerName}</p>
+            <p style="margin-bottom:6px;"><strong>Fulfillment Mode:</strong> ${order.deliveryMethod}</p>
+            <p style="margin-bottom:6px;"><strong>Payment Mode:</strong> ${order.paymentMethod}</p>
+            <p style="margin-bottom:6px;"><strong>Total Paid:</strong> <span style="color:var(--electric-indigo); font-weight:bold;">₹${order.totalAmount}</span></p>
+            <p><strong>Estimated Prep/Delivery:</strong> Today, within 2 hours</p>
+          `;
+        } else {
+          box.innerHTML = "<p>Order details retrieved.</p>";
+        }
       }
     });
   </script>

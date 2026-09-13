@@ -16,8 +16,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 if (typeof firebase !== 'undefined') {
-  firebase.initializeApp(firebaseConfig);
-  var database = firebase.database();
+  try {
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+  } catch (err) {
+    console.warn("Firebase initialization warning:", err);
+  }
 }
 
 // --- Store Catalog (12 Authentic Mumbai Sea & Freshwater Fishes) ---
@@ -146,12 +150,21 @@ const initialProducts = [
 
 // --- Local Storage Data Setup ---
 function initData() {
-  const stored = JSON.parse(localStorage.getItem("bf_products"));
-  if (!stored || stored.length < 12 || !stored[0].badge) {
+  try {
+    const stored = JSON.parse(localStorage.getItem("bf_products"));
+    if (!stored || !Array.isArray(stored) || stored.length < 12 || !stored[0].badge) {
+      localStorage.setItem("bf_products", JSON.stringify(initialProducts));
+    }
+  } catch (e) {
     localStorage.setItem("bf_products", JSON.stringify(initialProducts));
   }
-  if (!localStorage.getItem("bf_cart")) {
-    localStorage.setItem("bf_cart", JSON.stringify([]));
+
+  try {
+    if (!localStorage.getItem("bf_cart")) {
+      localStorage.setItem("bf_cart", JSON.stringify([]));
+    }
+  } catch (e) {
+    console.warn("Storage warning:", e);
   }
 }
 
@@ -159,15 +172,29 @@ initData();
 
 // --- Helper Functions ---
 function getProducts() {
-  return JSON.parse(localStorage.getItem("bf_products"));
+  try {
+    const prods = JSON.parse(localStorage.getItem("bf_products"));
+    return Array.isArray(prods) ? prods : initialProducts;
+  } catch (e) {
+    return initialProducts;
+  }
 }
 
 function getCart() {
-  return JSON.parse(localStorage.getItem("bf_cart"));
+  try {
+    const cart = JSON.parse(localStorage.getItem("bf_cart"));
+    return Array.isArray(cart) ? cart : [];
+  } catch (e) {
+    return [];
+  }
 }
 
 function saveCart(cart) {
-  localStorage.setItem("bf_cart", JSON.stringify(cart));
+  try {
+    localStorage.setItem("bf_cart", JSON.stringify(cart));
+  } catch (e) {
+    console.error("Failed to save cart to localStorage", e);
+  }
   updateCartBadge();
 }
 
@@ -175,7 +202,7 @@ function updateCartBadge() {
   const cart = getCart();
   const badge = document.getElementById("cartCount");
   if (badge) {
-    const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
+    const totalQty = cart.reduce((acc, item) => acc + (parseInt(item.quantity) || 1), 0);
     badge.innerText = totalQty;
   }
 }
@@ -199,8 +226,8 @@ function renderProductGrid(containerId, productsList) {
   if (!container) return;
 
   container.innerHTML = "";
-  if (productsList.length === 0) {
-    container.innerHTML = "<p>No fish found matching your criteria.</p>";
+  if (!productsList || productsList.length === 0) {
+    container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 30px;'>No fish found matching your criteria.</p>";
     return;
   }
 
@@ -210,7 +237,7 @@ function renderProductGrid(containerId, productsList) {
     card.innerHTML = `
       <span class="card-badge">${prod.badge || 'Fresh Catch'}</span>
       <div class="product-img-wrapper">
-        <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://via.placeholder.com/300x180?text=Fish+Image+Missing';">
+        <img src="${prod.image}" alt="${prod.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80';">
       </div>
       <div class="product-info">
         <span class="product-category">${prod.category}</span>
@@ -233,24 +260,35 @@ function renderProductGrid(containerId, productsList) {
 function addToCart(productId, weightKg, prepOption, quantity) {
   const products = getProducts();
   const product = products.find((p) => p.id === productId);
-  if (!product) return;
+  if (!product) {
+    alert("Product not found!");
+    return;
+  }
+
+  const weight = parseFloat(weightKg);
+  const qty = parseInt(quantity) || 1;
+
+  if (isNaN(weight) || weight <= 0) {
+    alert("Please enter a valid weight in kg.");
+    return;
+  }
 
   const cart = getCart();
-  const calculatedPrice = Math.round(product.pricePerKg * weightKg * quantity);
+  const calculatedPrice = Math.round(product.pricePerKg * weight * qty);
 
   const cartItem = {
     cartItemId: Date.now().toString(),
     productId: product.id,
     name: product.name,
     pricePerKg: product.pricePerKg,
-    weightKg: weightKg,
-    prepOption: prepOption,
-    quantity: quantity,
+    weightKg: weight,
+    prepOption: prepOption || "Cleaned & Gutted",
+    quantity: qty,
     totalPrice: calculatedPrice,
     image: product.image
   };
 
   cart.push(cartItem);
   saveCart(cart);
-  alert(`${product.name} (${weightKg} kg) added to cart!`);
+  alert(`Added to cart: ${product.name} (${weight} kg x ${qty}) - ₹${calculatedPrice}`);
 }

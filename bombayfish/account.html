@@ -10,10 +10,17 @@
   <header>
     <nav class="navbar">
       <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
-      <div class="nav-links">
+      <button class="menu-toggle" id="mobileMenuToggle">☰</button>
+      <div class="nav-links" id="navLinks">
         <a href="index.html">Home</a>
         <a href="products.html">Fish Market</a>
         <a href="about.html">About & Field Study</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Seller Dashboard</a>
+      </div>
+      <div class="nav-icons">
+        <a href="cart.html" class="cart-icon-btn">🛒 <span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-outline" style="color: white; border-color: white; padding: 4px 10px; font-size:0.85rem;">Login</a>
       </div>
     </nav>
   </header>
@@ -31,6 +38,29 @@
     </div>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h3>🐟 Bombayfish</h3>
+        <p>Digital extension of traditional dock markets.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Fish Market</a></p>
+        <p><a href="about.html">Field Study</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      <div>
+        <h4>Project Notice</h4>
+        <p>Developed as a College Field Study Project. Demonstrates offline-to-online fish retail transition.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>College Field Project — Fresh Fish Market | Bombayfish © 2026</p>
+    </div>
+  </footer>
+
   <!-- Firebase SDK Libraries -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -39,34 +69,44 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const container = document.getElementById("userOrdersContainer");
+      if (!container) return;
+
+      function displayOrders(orders) {
+        if (!orders || orders.length === 0) {
+          container.innerHTML = "<p style='color:var(--text-muted);'>No active orders found for this account.</p>";
+          return;
+        }
+
+        container.innerHTML = orders.map(o => `
+          <div style="border-bottom: 1px solid var(--border-color); padding: 16px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <strong style="color:var(--deep-charcoal);">Order ID: ${o.orderId}</strong> <small style="color:var(--text-muted);">(${o.date || 'Today'})</small><br>
+              <span>Total Amount: <strong style="color:var(--electric-indigo);">₹${o.totalAmount}</strong></span> |
+              <span>Method: ${o.deliveryMethod}</span>
+            </div>
+            <div>
+              <span style="padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; background: var(--aqua-tint); color: var(--vivid-cyan); border: 1px solid rgba(6, 182, 212, 0.2);">
+                Status: ${o.status}
+              </span>
+            </div>
+          </div>
+        `).join('');
+      }
 
       if (typeof database !== 'undefined') {
         database.ref('orders').on('value', (snapshot) => {
           const data = snapshot.val();
           if (!data) {
-            container.innerHTML = "<p style='color:var(--text-muted);'>No active orders found for this account.</p>";
+            displayOrders([]);
             return;
           }
-
           const orderKeys = Object.keys(data).reverse();
-          container.innerHTML = orderKeys.map(key => {
-            const o = data[key];
-            return `
-              <div style="border-bottom: 1px solid var(--border-color); padding: 16px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-                <div>
-                  <strong style="color:var(--deep-charcoal);">Order ID: ${o.orderId}</strong> <small style="color:var(--text-muted);">(${o.date || 'Today'})</small><br>
-                  <span>Total Amount: <strong style="color:var(--electric-indigo);">₹${o.totalAmount}</strong></span> |
-                  <span>Method: ${o.deliveryMethod}</span>
-                </div>
-                <div>
-                  <span style="padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; background: var(--aqua-tint); color: var(--vivid-cyan); border: 1px solid rgba(6, 182, 212, 0.2);">
-                    Status: ${o.status}
-                  </span>
-                </div>
-              </div>
-            `;
-          }).join('');
+          const orders = orderKeys.map(k => data[k]);
+          displayOrders(orders);
         });
+      } else {
+        const localOrders = JSON.parse(localStorage.getItem("bf_orders")) || [];
+        displayOrders(localOrders.reverse());
       }
     });
   </script>
