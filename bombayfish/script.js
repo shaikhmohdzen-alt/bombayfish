@@ -221,7 +221,7 @@ function renderProductGrid(containerId, productsList) {
             <div class="product-price">₹${prod.pricePerKg} / kg</div>
             <span class="stock-tag">${prod.availability}</span>
           </div>
-          <a href="product-details.html?id=${prod.id}" class="btn btn-outline" style="padding: 5px 10px; font-size: 0.85rem;">View</a>
+          <a href="product-details.html?id=${prod.id}" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 10px;">View</a>
         </div>
       </div>
     `;

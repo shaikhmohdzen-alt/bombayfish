@@ -17,18 +17,18 @@
     </nav>
   </header>
 
-  <div class="container" style="max-width: 450px; margin-top: 40px;">
-    <div style="background: white; padding: 30px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
-      
+  <div class="container" style="max-width: 480px; margin-top: 40px;">
+    <div style="background: white; padding: 36px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);">
+
       <!-- Toggle Tabs -->
-      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <div style="display: flex; gap: 12px; margin-bottom: 24px;">
         <button id="showLoginBtn" class="btn btn-primary" style="flex:1;" onclick="toggleForm('login')">Login</button>
         <button id="showRegBtn" class="btn btn-outline" style="flex:1;" onclick="toggleForm('register')">Register</button>
       </div>
 
       <!-- Login Form -->
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <h3 style="color: var(--primary-navy); margin-bottom: 15px;">Sign In</h3>
+        <h3 style="color: var(--deep-charcoal); margin-bottom: 18px;">Sign In</h3>
         <div class="form-group">
           <label>Mobile Number or Email</label>
           <input type="text" id="loginId" required placeholder="e.g. 9820098200">
@@ -42,7 +42,7 @@
 
       <!-- Registration Form -->
       <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
-        <h3 style="color: var(--primary-navy); margin-bottom: 15px;">Create Account</h3>
+        <h3 style="color: var(--deep-charcoal); margin-bottom: 18px;">Create Account</h3>
         <div class="form-group">
           <label>Full Name</label>
           <input type="text" id="regName" required placeholder="e.g. Rahul Sharma">

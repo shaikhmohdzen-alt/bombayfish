@@ -14,16 +14,16 @@
   </header>
 
   <div class="container" style="max-width: 600px; margin-top: 40px;">
-    <div style="background: white; padding: 40px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+    <div style="background: white; padding: 40px; border-radius: var(--radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);">
       <div style="font-size: 3rem; color: var(--green-fresh); margin-bottom: 10px;">✅</div>
-      <h2 style="color: var(--primary-navy);">Order Placed Successfully!</h2>
-      <p style="color: var(--text-muted); margin-bottom: 20px;">Thank you for testing our online fish market platform demonstration.</p>
+      <h2 style="color: var(--deep-charcoal);">Order Placed Successfully!</h2>
+      <p style="color: var(--text-muted); margin-bottom: 24px;">Thank you for testing our online fish market platform demonstration.</p>
 
-      <div id="receiptBox" style="text-align: left; background: var(--light-bg); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; font-size: 0.95rem;">
+      <div id="receiptBox" style="text-align: left; background: var(--off-white); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 24px; font-size: 0.95rem;">
         <!-- Filled via JS -->
       </div>
 
-      <div style="display: flex; gap: 15px; justify-content: center;">
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
         <a href="products.html" class="btn btn-primary">Continue Shopping</a>
         <a href="account.html" class="btn btn-outline">Track In Account</a>
       </div>
@@ -41,11 +41,11 @@
       const box = document.getElementById("receiptBox");
       if (order) {
         box.innerHTML = `
-          <p><strong>Order Reference:</strong> ${order.orderId}</p>
-          <p><strong>Customer:</strong> ${order.customerName}</p>
-          <p><strong>Fulfillment Mode:</strong> ${order.deliveryMethod}</p>
-          <p><strong>Payment Mode:</strong> ${order.paymentMethod}</p>
-          <p><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
+          <p style="margin-bottom:6px;"><strong>Order Reference:</strong> ${order.orderId}</p>
+          <p style="margin-bottom:6px;"><strong>Customer:</strong> ${order.customerName}</p>
+          <p style="margin-bottom:6px;"><strong>Fulfillment Mode:</strong> ${order.deliveryMethod}</p>
+          <p style="margin-bottom:6px;"><strong>Payment Mode:</strong> ${order.paymentMethod}</p>
+          <p style="margin-bottom:6px;"><strong>Total Paid:</strong> <span style="color:var(--electric-indigo); font-weight:bold;">₹${order.totalAmount}</span></p>
           <p><strong>Estimated Prep/Delivery:</strong> Today, within 2 hours</p>
         `;
       } else {
