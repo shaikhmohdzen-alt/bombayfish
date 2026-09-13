@@ -10,12 +10,17 @@
   <header>
     <nav class="navbar">
       <a href="index.html" class="logo">🐟 Bombay<span>fish</span></a>
-      <div class="nav-links">
+      <button class="menu-toggle" id="mobileMenuToggle">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
         <a href="products.html">Fish Market</a>
-        <a href="cart.html">Cart</a>
+        <a href="about.html">About & Field Study</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Seller Dashboard</a>
       </div>
       <div class="nav-icons">
         <a href="cart.html" class="cart-icon-btn">🛒 <span class="cart-count" id="cartCount">0</span></a>
+        <a href="login.html" class="btn btn-outline" style="color: white; border-color: white; padding: 4px 10px; font-size:0.85rem;">Login</a>
       </div>
     </nav>
   </header>
@@ -23,6 +28,29 @@
   <div class="container" id="detailsContainer" style="margin-top: 30px;">
     <!-- Populated dynamically via JS -->
   </div>
+
+  <footer>
+    <div class="footer-content">
+      <div>
+        <h3>🐟 Bombayfish</h3>
+        <p>Digital extension of traditional dock markets.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="index.html">Home</a></p>
+        <p><a href="products.html">Fish Market</a></p>
+        <p><a href="about.html">Field Study</a></p>
+        <p><a href="contact.html">Contact</a></p>
+      </div>
+      <div>
+        <h4>Project Notice</h4>
+        <p>Developed as a College Field Study Project. Demonstrates offline-to-online fish retail transition.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>College Field Project — Fresh Fish Market | Bombayfish © 2026</p>
+    </div>
+  </footer>
 
   <script src="script.js"></script>
   <script>
@@ -33,10 +61,12 @@
       const product = products.find(p => p.id === prodId) || products[0];
 
       const container = document.getElementById("detailsContainer");
+      if (!container) return;
+
       container.innerHTML = `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; background: white; padding: 36px; border-radius: var(--radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);">
           <div>
-            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border-color);">
+            <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border-color);" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80';">
           </div>
           <div>
             <span class="product-category">${product.category}</span>
@@ -83,25 +113,29 @@
       const calcPrice = document.getElementById("calculatedPrice");
 
       function updatePrice() {
+        if (!weightInput || !qtyInput || !calcPrice) return;
         const w = parseFloat(weightInput.value) || 0;
         const q = parseInt(qtyInput.value) || 1;
         const total = Math.round(product.pricePerKg * w * q);
         calcPrice.innerText = `₹${total}`;
       }
 
-      weightInput.addEventListener("input", updatePrice);
-      qtyInput.addEventListener("input", updatePrice);
+      if (weightInput) weightInput.addEventListener("input", updatePrice);
+      if (qtyInput) qtyInput.addEventListener("input", updatePrice);
 
-      document.getElementById("addToCartBtn").addEventListener("click", () => {
-        const weight = parseFloat(weightInput.value);
-        if (isNaN(weight) || weight <= 0) {
-          alert("Please enter a valid weight in kg (e.g., 0.5, 1, 1.5).");
-          return;
-        }
-        const prep = document.getElementById("prepSelect").value;
-        const qty = parseInt(qtyInput.value) || 1;
-        addToCart(product.id, weight, prep, qty);
-      });
+      const addBtn = document.getElementById("addToCartBtn");
+      if (addBtn) {
+        addBtn.addEventListener("click", () => {
+          const weight = parseFloat(weightInput.value);
+          if (isNaN(weight) || weight <= 0) {
+            alert("Please enter a valid weight in kg (e.g., 0.5, 1, 1.5).");
+            return;
+          }
+          const prep = document.getElementById("prepSelect").value;
+          const qty = parseInt(qtyInput.value) || 1;
+          addToCart(product.id, weight, prep, qty);
+        });
+      }
     });
   </script>
 </body>
